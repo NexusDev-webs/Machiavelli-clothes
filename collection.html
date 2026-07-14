@@ -1,0 +1,1864 @@
+﻿﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Machiavelli Collection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --deep: #111111;
+      --surface: #1a1a1a;
+      --border: #252525;
+      --gold: #c9a84c;
+      --gold-dim: #8a6a28;
+      --yellow: #f5d000;
+      --white: #f0ede6;
+      --muted: #888;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--black);
+      color: var(--white);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-ghost-gold,
+    .cart-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.8rem 1.4rem;
+      border: 1px solid var(--border);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--yellow);
+      color: var(--black);
+      border-color: var(--yellow);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--white);
+    }
+
+    .btn-ghost-gold {
+      background: transparent;
+      color: var(--gold);
+      border-color: var(--gold-dim);
+    }
+
+    .btn-primary:hover,
+    .btn-secondary:hover,
+    .btn-ghost-gold:hover,
+    .cart-link:hover {
+      transform: translateY(-1px);
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 5vw;
+      background: rgba(10, 10, 10, 0.95);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.4rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .nav-links a:hover {
+      color: var(--white);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+    }
+
+    .cart-link {
+      background: transparent;
+      color: var(--white);
+    }
+
+    .cart-count {
+      min-width: 1.6rem;
+      height: 1.6rem;
+      padding: 0 0.4rem;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--yellow);
+      color: var(--black);
+      font-weight: 700;
+    }
+
+    .page-shell {
+      padding: 3.5rem 5vw 5rem;
+    }
+
+    .page-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .page-head h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.3rem, 4vw, 3.2rem);
+      letter-spacing: 0.05em;
+    }
+
+    .page-head p {
+      max-width: 560px;
+      color: var(--muted);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.2rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .card-img {
+      background: radial-gradient(circle at top, rgba(245, 208, 0, 0.24), transparent 60%), var(--deep);
+      padding: 1.6rem;
+      min-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--yellow);
+      position: relative;
+    }
+
+    .card-img-overlay-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 5;
+    }
+
+    .card:hover .card-img-overlay-btn {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .card:hover .card-img-overlay-btn:hover {
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+
+    .variant-swatches {
+      display: flex;
+      gap: 0.5rem;
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+    }
+
+    .variant-swatch {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+      background-size: cover;
+      background-position: center;
+    }
+
+    .variant-swatch.active {
+      outline: 2px solid var(--yellow);
+    }
+
+    .card-body {
+      padding: 1.2rem;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-cat {
+      color: var(--gold);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .card-name {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-desc {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.8rem;
+      margin-top: auto;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .card-price {
+      font-family: var(--font-display);
+      color: var(--yellow);
+      letter-spacing: 0.06em;
+    }
+
+    .cart-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.58);
+      display: none;
+      z-index: 1040;
+    }
+
+    .cart-backdrop.show {
+      display: block;
+    }
+
+    .cart-panel {
+      position: fixed;
+      top: 4.8rem;
+      right: 1.2rem;
+      width: min(360px, calc(100vw - 2rem));
+      max-height: calc(100vh - 5.6rem);
+      overflow: auto;
+      padding: 1.2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.36);
+      z-index: 1050;
+      transform: translateX(120%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    .cart-panel.open {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .cart-panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .cart-panel-head h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      letter-spacing: 0.06em;
+    }
+
+    .cart-close {
+      width: 2rem;
+      height: 2rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--white);
+      cursor: pointer;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cart-item:last-child {
+      border-bottom: none;
+    }
+
+    .cart-item-visual {
+      width: 56px;
+      height: 56px;
+      border: 1px solid var(--border);
+      background: radial-gradient(circle at top, rgba(245, 208, 0, 0.3), transparent 60%), var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      color: var(--yellow);
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item-name {
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+
+    .cart-item-meta {
+      color: var(--muted);
+      font-size: 0.72rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .cart-item-price {
+      font-family: var(--font-display);
+      color: var(--yellow);
+      letter-spacing: 0.06em;
+    }
+
+    .cart-qty {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.35rem;
+    }
+
+    .qty-btn {
+      width: 24px;
+      height: 24px;
+      background: transparent;
+      color: var(--white);
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 0.9rem;
+      margin-top: 0.9rem;
+    }
+
+    .cart-empty {
+      color: var(--muted);
+      padding: 0.5rem 0 1rem;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      margin-top: 0.85rem;
+      justify-content: center;
+    }
+
+    .checkout-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(245, 208, 0, 0.06), transparent 28%),
+        linear-gradient(180deg, rgba(10, 10, 10, 0.98), rgba(17, 17, 17, 1));
+    }
+
+    nav {
+      border-radius: 0 0 24px 24px;
+      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.24);
+    }
+
+    .page-shell {
+      position: relative;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25);
+    }
+
+    .page-shell::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201, 168, 76, 0.05), transparent 35%);
+      pointer-events: none;
+    }
+
+    .page-head {
+      position: relative;
+      z-index: 1;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 1.6rem 1.8rem;
+      background: rgba(255, 255, 255, 0.03);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    .card {
+      border-radius: 22px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 520px;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: var(--gold-dim);
+      box-shadow: 0 24px 66px rgba(0, 0, 0, 0.32);
+    }
+
+    .card-img {
+      border-radius: 22px 22px 0 0;
+      position: relative;
+      overflow: hidden;
+      height: 320px;
+      background: #f4f1ea;
+    }
+
+    .card-img img {
+      width: 110%;
+      height: 110%;
+      object-fit: contain;
+      display: block;
+      padding: 0.1rem;
+    }
+
+    .cart-panel {
+      border-radius: 24px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
+    }
+
+    .custom-design-cta {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      padding: 3.5rem 0 0;
+    }
+
+    .custom-design-btn {
+      position: relative;
+      max-width: 760px;
+      width: min(100%, 760px);
+      min-height: 74px;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      text-align: center;
+      line-height: 1.25;
+      padding: 1.25rem 2rem;
+      border: 1px solid rgba(245, 208, 0, 0.9);
+      border-radius: 0;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 26%),
+        var(--yellow);
+      color: var(--black);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.34), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+      overflow: hidden;
+    }
+
+    .custom-design-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+      transform: translateX(-120%);
+      transition: transform 0.55s ease;
+    }
+
+    .custom-design-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 24px 62px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+    }
+
+    .custom-design-btn:hover::before {
+      transform: translateX(120%);
+    }
+
+    .custom-design-kicker,
+    .custom-design-main {
+      position: relative;
+      z-index: 1;
+    }
+
+    .custom-design-kicker {
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      opacity: 0.68;
+    }
+
+    .custom-design-main {
+      font-family: var(--font-display);
+      font-size: clamp(1.35rem, 3.2vw, 2.1rem);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 900px) {
+      .product-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 580px) {
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+
+      nav {
+        flex-direction: column;
+        gap: 0.8rem;
+        align-items: flex-start;
+      }
+
+      .page-shell {
+        padding: 2.2rem 1.2rem 3rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="collection.html">Collection</a></li>
+      <li><a href="index.html#story">Story</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button type="button" class="cart-link" id="cartToggle">Cart <span class="cart-count"
+          id="cartCount">0</span></button>
+      <a href="index.html" class="btn-secondary">Back Home</a>
+    </div>
+  </nav>
+  <div class="cart-backdrop" id="cartBackdrop"></div>
+  <div class="cart-panel" id="cartPanel" aria-live="polite">
+    <div class="cart-panel-head">
+      <h3>Your Cart</h3>
+      <button type="button" class="cart-close" id="closeCart" aria-label="Close cart">&times;</button>
+    </div>
+    <div id="cartItems">
+      <div class="cart-empty">Your cart is empty. Add a piece from the collection.</div>
+    </div>
+    <div class="cart-total">
+      <span>Total</span>
+      <strong id="cartTotal">EGP 0</strong>
+    </div>
+    <button type="button" class="btn-primary checkout-btn" id="checkoutButton" disabled>Buy on WhatsApp</button>
+  </div>
+
+  <main class="page-shell">
+    <div class="page-head">
+      <div>
+        <div class="section-label"
+          style="color:var(--gold); font-size:0.7rem; letter-spacing:0.3em; text-transform:uppercase; margin-bottom:0.6rem;">
+          Collection</div>
+        <h1>The Bold Edit</h1>
+      </div>
+      <p>Curated pieces that blend Egyptian edge, oversized silhouettes, and the attitude of a real drop. Add anything
+        you love to your cart and order straight away.</p>
+    </div>
+    <section class="product-grid">
+      <!-- Product: V.1 -->
+      <div class="card" data-product="V.1">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-1.jpg" alt="V.3" />
+        </div>
+        <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.1">Add to
+          Cart</button>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.1</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.2 -->
+      <div class="card" data-product="V.2">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-2.jpg" alt="V.2" />
+        </div>
+        <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.2">Add to
+          Cart</button>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.2</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.2">Add</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.3 -->
+      <div class="card" data-product="V.3">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-3.jpg" alt="V.3" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.3</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.3">Add</button>
+            <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.3">Add to
+              Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.4 -->
+      <div class="card" data-product="V.4">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-4.jpg" alt="V.4" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.4</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.4">Add</button>
+            <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.4">Add to
+              Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.5 -->
+      <div class="card" data-product="V.5">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-5.jpg" alt="V.5" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.5</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.5">Add</button>
+            <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.5">Add to
+              Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.6 -->
+      <div class="card" data-product="V.6">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-6.jpg" alt="V.6" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.6</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.6">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.6">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.7 -->
+      <div class="card" data-product="V.7">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-7.jpg" alt="V.7" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.7</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.7">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.7">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.8 -->
+      <div class="card" data-product="V.8">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-8.jpg" alt="V.8" />
+          <div class="variant-swatches" aria-label="Choose color">
+            <button type="button" class="variant-swatch active" data-image="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-8.jpg"
+              data-variant="Burgundy" data-label="V.8" title="Burgundy" aria-label="Show Burgundy color"
+              style="background:#6e1423"></button>
+            <button type="button" class="variant-swatch" data-image="C:\Users\Dr.Samia\MyWeb\images\organized\misc-9\misc-9-8.jpg"
+              data-variant="Black" data-label="V.8" title="Black" aria-label="Show Black color"
+              style="background:#000"></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.8</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.8">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.8">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.10 -->
+      <div class="card" data-product="V.10">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-10.jpg" alt="V.10" />
+          <div class="variant-swatches" aria-label="Choose color">
+            <button type="button" class="variant-swatch active" data-image="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-10.jpg"
+              data-variant="Burgundy" data-label="V.10" title="Burgundy" aria-label="Show Burgundy color"
+              style="background:#6e1423"></button>
+            <button type="button" class="variant-swatch" data-image="C:\Users\Dr.Samia\MyWeb\images\organized\misc-11\misc-11-10.jpg"
+              data-variant="Beige" data-label="V.10" title="Beige" aria-label="Show Beige color"
+              style="background:#d8c6a8"></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.10</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.10">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.10">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.12 -->
+      <div class="card" data-product="V.12">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-12.jpg" alt="V.12" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.12</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.12">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.12">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.13 -->
+      <div class="card" data-product="V.13">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-13.jpeg" alt="V.13" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.13</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.13">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.13">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.14 -->
+      <div class="card" data-product="V.14">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-14.jpeg" alt="V.14" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.14</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.14">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.14">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.15 -->
+      <div class="card" data-product="V.15">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-15.jpeg" alt="V.15" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.15</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.15">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.15">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.16 -->
+      <div class="card" data-product="V.16">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-16.jpeg" alt="V.16" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.16</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.16">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.16">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.17 -->
+      <div class="card" data-product="V.17">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-17.jpeg" alt="V.17" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.17</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.17">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.17">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.18 -->
+      <div class="card" data-product="V.18">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-18.jpeg" alt="V.18" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.18</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.18">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.18">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.19 -->
+      <div class="card" data-product="V.19">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-19.jpeg" alt="V.19" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.19</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.19">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.19">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.20 -->
+      <div class="card" data-product="V.20">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-20.jpeg" alt="V.20" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.20</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.20">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.20">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.21 -->
+      <div class="card" data-product="V.21">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-21.jpeg" alt="V.21" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.21</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.21">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.21">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.22 -->
+      <div class="card" data-product="V.22">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-22.jpeg" alt="V.22" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.22</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.22">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.22">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.23 -->
+      <div class="card" data-product="V.23">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-23.jpeg" alt="V.23" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.23</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.23">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.23">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.24 -->
+      <div class="card" data-product="V.24">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-24.jpeg" alt="V.24" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.24</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.24">Add</button>
+            <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.24">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.25 -->
+      <div class="card" data-product="V.25">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-25.jpeg" alt="V.25" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.25</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.25">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.25">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.26 -->
+      <div class="card" data-product="V.26">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-26.jpeg" alt="V.26" />
+          <div class="variant-swatches" aria-label="Choose color">
+            <button type="button" class="variant-swatch active" data-image="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-26.jpeg"
+              data-variant="Burgundy" data-label="V.26" title="Burgundy" aria-label="Show Burgundy color"
+              style="background:#6e1423"></button>
+            <button type="button" class="variant-swatch" data-image="C:\Users\Dr.Samia\MyWeb\images\organized\misc-47\misc-47-26.jpeg"
+              data-variant="Black" data-label="V.26" title="Black" aria-label="Show Black color"
+              style="background:#000"></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.26</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.26">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.26">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.27 -->
+      <div class="card" data-product="V.27">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-27.jpeg" alt="V.27" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.27</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.27">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.27">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.28 -->
+      <div class="card" data-product="V.28">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-28.jpeg" alt="V.28" />
+          <div class="variant-swatches" aria-label="Choose color">
+            <button type="button" class="variant-swatch active" data-image="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-28.jpeg"
+              data-variant="Burgundy" data-label="V.28" title="Burgundy" aria-label="Show Burgundy color"
+              style="background:#6e1423"></button>
+            <button type="button" class="variant-swatch" data-image="C:\Users\Dr.Samia\MyWeb\images\organized\misc-42\misc-42-28.jpeg"
+              data-variant="Black" data-label="V.28" title="Black" aria-label="Show Black color"
+              style="background:#000"></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.28</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.28">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.28">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.29 -->
+      <div class="card" data-product="V.29">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-29.jpeg" alt="V.29" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.29</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.29">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.29">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.30 -->
+      <div class="card" data-product="V.30">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-30.jpeg" alt="V.30" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.30</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.30">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.30">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.31 -->
+      <div class="card" data-product="V.31">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-31.jpeg" alt="V.31" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.31</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.31">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.31">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.32 -->
+      <div class="card" data-product="V.32">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-32.jpeg" alt="V.32" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.32</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.32">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.32">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.33 -->
+      <div class="card" data-product="V.33">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-33.jpeg" alt="V.33" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.33</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.33">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.33">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.34 -->
+      <div class="card" data-product="V.34">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-34.jpeg" alt="V.34" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.34</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.34">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.34">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.35 -->
+      <div class="card" data-product="V.35">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-35.jpeg" alt="V.35" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.35</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.35">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.35">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.36 -->
+      <div class="card" data-product="V.36">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-36.jpeg" alt="V.36" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.36</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.36">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.36">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.37 -->
+      <div class="card" data-product="V.37">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-37.jpeg" alt="V.37" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.37</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.37">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.37">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.38 -->
+      <div class="card" data-product="V.38">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-38.jpeg" alt="V.38" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.38</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.38">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.38">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.39 -->
+      <div class="card" data-product="V.39">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-39.jpeg" alt="V.39" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.39</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.39">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.39">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.40 -->
+      <div class="card" data-product="V.40">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-40.jpeg" alt="V.40" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.40</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.40">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.40">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.41 -->
+      <div class="card" data-product="V.41">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-41.jpeg" alt="V.41" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.41</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.41">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.41">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.43 -->
+      <div class="card" data-product="V.43">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-43.jpeg" alt="V.43" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.43</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.43">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.43">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.44 -->
+      <div class="card" data-product="V.44">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-44.jpeg" alt="V.44" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.44</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.44">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.44">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.45 -->
+      <div class="card" data-product="V.45">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-45.jpeg" alt="V.45" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.45</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.45">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.46">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.46 -->
+      <div class="card" data-product="V.46">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-46.jpeg" alt="V.46" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.46</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.46">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.46">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.48 -->
+      <div class="card" data-product="V.48">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-48.jpeg" alt="V.48" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.48</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.48">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.48">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.49 -->
+      <div class="card" data-product="V.49">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-49.jpeg" alt="V.49" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.49</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.49">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.49">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.50 -->
+      <div class="card" data-product="V.50">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-50.jpeg" alt="V.50" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.50</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.50">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.50">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.51 -->
+      <div class="card" data-product="V.51">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-51.jpeg" alt="V.51" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.51</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.51">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.51">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.52 -->
+      <div class="card" data-product="V.52">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-52.jpeg" alt="V.52" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.52</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.52">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.52">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.53 -->
+      <div class="card" data-product="V.53">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-53.jpeg" alt="V.53" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.53</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.53">Add</button>
+        <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.53">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.54 -->
+      <div class="card" data-product="V.54">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-54.jpeg" alt="V.54" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.54</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.54">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.54">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.55 -->
+      <div class="card" data-product="V.55">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-55.jpeg" alt="V.55" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.55</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.55">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.55">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.56 -->
+      <div class="card" data-product="V.56">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-56.jpeg" alt="V.56" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.56</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.56">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.56">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.57 -->
+      <div class="card" data-product="V.57">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-57.jpeg" alt="V.57" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.57</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.57">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.57">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.58 -->
+      <div class="card" data-product="V.58">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-58.jpeg" alt="V.58" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.58</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.58">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.58">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.59 -->
+      <div class="card" data-product="V.59">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-59.jpeg" alt="V.59" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.59</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.59">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.59">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+      <!-- Product: V.60 -->
+      <div class="card" data-product="V.60">
+        <div class="card-img">
+          <img src="C:\Users\Dr.Samia\MyWeb\images\organized\misc\misc-60.jpeg" alt="V.60" />
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Shirt</div>
+          <div class="card-name">V.60</div>
+          <div class="card-desc">
+            &#9670; Oversize T-shirt <br>
+            &#9670; cotton polivar 100%<br>
+            &#9670; DTF full Printed
+          </div>
+          <div class="card-footer">
+            <span class="card-price">EGP 700</span>
+            <button type="button" class="btn-primary add-to-cart" data-product="V.60">Add</button>
+                    <button type="button" class="btn-primary card-img-overlay-btn add-to-cart" data-product="V.60">Add to Cart</button>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="custom-design-cta">
+      <a class="btn-primary custom-design-btn"
+        href="https://wa.me/201229444626?text=Hi%20Machiavelli%21%20I%20want%20to%20make%20a%20custom%20design.%20Can%20you%20help%20me%20with%20the%20details%3F"
+        target="_blank" rel="noopener noreferrer">
+        <span class="custom-design-kicker">Need something personal?</span>
+        <span class="custom-design-main">We Can Make a Custom Design For You</span>
+      </a>
+    </div>
+  </main>
+
+  <script src="cart.js"></script>
+  <script>
+    // Variant switch handling: set active option and update preview image
+    document.addEventListener('click', function (e) {
+      const sw = e.target.closest('.variant-swatch');
+      if (!sw) return;
+      const card = sw.closest('.card');
+      if (!card) return;
+
+      card.querySelectorAll('.variant-swatch').forEach(s => s.classList.remove('active'));
+      sw.classList.add('active');
+
+      const img = card.querySelector('.card-img img');
+      const name = card.querySelector('.card-name');
+      const productId = card.getAttribute('data-product');
+      const variant = sw.getAttribute('data-variant');
+      const newSrc = sw.getAttribute('data-image');
+      const label = sw.getAttribute('data-label');
+
+      if (img && productId && variant && newSrc) {
+        img.setAttribute('src', newSrc);
+        img.setAttribute('alt', label || `${productId} variant ${variant}`);
+      }
+      if (name && label) {
+        name.textContent = label;
+      }
+    });
+  </script>
+</body>
+
+</html>
